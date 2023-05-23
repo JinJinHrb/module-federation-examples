@@ -1,14 +1,17 @@
 import React from 'react';
-import { loadComponent } from './utils/loadComponent';
+import { importRemote } from '@module-federation/utilities';
 
 function System(props) {
-  const { system, system: { remote, url, module } } = props;
+  const {
+    system,
+    system: { url, scope, module },
+  } = props;
 
-  if (!system || !remote || !url || !module) {
+  if (!system || !url || !scope || !module) {
     return <h2>No system specified</h2>;
   }
 
-  const Component = React.lazy(loadComponent(remote, 'default', module, url));
+  const Component = React.lazy(() => importRemote({ url, scope, module }));
 
   return (
     <React.Suspense fallback="Loading System">
@@ -22,16 +25,16 @@ function App() {
 
   function setApp2() {
     setSystem({
-      remote: 'app2',
-      url: 'http://localhost:3002/remoteEntry.js',
+      url: 'http://localhost:3002',
+      scope: 'app2',
       module: './Widget',
     });
   }
 
   function setApp3() {
     setSystem({
-      remote: 'app3',
-      url: 'http://localhost:3003/remoteEntry.js',
+      url: 'http://localhost:3003',
+      scope: 'app3',
       module: './Widget',
     });
   }
@@ -47,7 +50,8 @@ function App() {
       <h2>App 1</h2>
       <p>
         The Dynamic System will take advantage Module Federation <strong>remotes</strong> and{' '}
-        <strong>exposes</strong>. It will not load any components or modules that have been loaded already.
+        <strong>exposes</strong>. It will not load any components or modules that have been loaded
+        already.
       </p>
       <button onClick={setApp2}>Load App 2 Widget</button>
       <button onClick={setApp3}>Load App 3 Widget</button>

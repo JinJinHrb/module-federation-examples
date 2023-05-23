@@ -1,3 +1,4 @@
-import { createFederatedCatchAll } from 'nextjs-shared';
-
-export default createFederatedCatchAll(process.env.REMOTES);
+import HomePage from 'home/home';
+const Home = HomePage;
+Home.getInitialProps = HomePage.getInitialProps;
+export default Home;
